@@ -12,24 +12,23 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'username' => 'required',
+            'user_name' => 'required',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only(['username', 'password']))) {
-            $user = Auth::user();
+        if (Auth::attempt($request->only(['user_name', 'password']))) {
             $token = $request->user()->createToken('token');
 
-            return response()->json(["token" => $token->plainTextToken], 200);
+            return response()->json(["token" => $token->plainTextToken]);
         }
 
-        return response()->json('Username and Password not match', 401);
+        return response()->json(["message" => 'Username and Password not match'], 401);
     }
 
     public function cookieLogin(Request $request): JsonResponse
     {
         $request->validate([
-            'username' => 'required',
+            'user_name' => 'required',
             'password' => 'required',
         ]);
 
