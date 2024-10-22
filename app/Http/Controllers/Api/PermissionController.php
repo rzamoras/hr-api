@@ -11,7 +11,13 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $roles = Role::with('permissions')->get();
+        $roles = Role::with('permissions')->paginate(10);
+        $permissions = Permission::get();
+
+        foreach ($roles as $role) {
+            $role_permissions = $role->permissions;
+            $role->unassigned = $permissions->diff($role_permissions);
+        }
 
         return response()->json($roles);
     }
