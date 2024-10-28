@@ -31,6 +31,8 @@ class CsmResponseController extends Controller
             'sqd6' => 'required',
             'sqd7' => 'required',
             'sqd8' => 'required',
+            'suggestion' => 'sometimes',
+            'email' => 'sometimes',
         ]);
 
         CsmResponse::create($responses);

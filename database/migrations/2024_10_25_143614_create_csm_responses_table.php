@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('control_no');
             $table->string('client_type')->nullable()->default(null);
-            $table->date('response_date')->nullable()->default(null);
+            $table->dateTime('response_date')->nullable()->default(null);
             $table->string('sex')->nullable()->default(null);
             $table->string('age')->nullable()->default(null);
             $table->string('region')->nullable()->default(null);
