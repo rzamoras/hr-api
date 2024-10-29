@@ -20,10 +20,15 @@ Route::middleware('auth:sanctum')->group(function () {
         '/user' => UserController::class,
     ]);
 
-    Route::get('/get-permissions', [PermissionController::class, 'permissions']);
-
     Route::controller(PermissionController::class)->group(function () {
+        Route::get('/get-permissions', 'permissions');
         Route::get('/user-roles', 'userRoles');
         Route::get('/user-permissions', 'userPermissions');
+        Route::post('/revoke-role-permission', 'revokeRolePermission');
+        Route::post('/assign-role-permission', 'assignRolePermission');
+    });
+
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'users');
     });
 });

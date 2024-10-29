@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -22,11 +23,36 @@ class PermissionController extends Controller
         return response()->json($roles);
     }
 
+    public function show($id)
+    {
+        $role = Role::where('id', $id)->with('permissions')->first();
+        $role->all_permissions = Permission::all();
+        $role->unassigned = $role->all_permissions->diff($role->permissions);
+
+        return response()->json($role);
+    }
+
     public function permissions()
     {
         $permissions = Permission::get();
 
         return response()->json($permissions);
+    }
+
+    public function revokeRolePermission(Request $request) {
+        $role = Role::where('id', $request->role_id)->with('permissions')->first();
+        $permission = Permission::where('id', $request->permission_id)->first();
+        $role->revokePermissionTo($permission);
+
+        return response()->json('Permission revoked');
+    }
+
+    public function assignRolePermission(Request $request) {
+        $role = Role::where('id', $request->role_id)->with('permissions')->first();
+        $permission = Permission::where('id', $request->permission_id)->first();
+        $role->givePermissionTo($permission);
+
+        return response()->json('Permission assigned');
     }
 
     public static function userRoles()
@@ -37,7 +63,8 @@ class PermissionController extends Controller
         return response()->json($roles);
     }
 
-    public static function userPermissions() {
+    public static function userPermissions()
+    {
         $user = Auth::user();
         $user->getPermissionsViaRoles();
 

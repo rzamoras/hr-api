@@ -50,4 +50,11 @@ class UserController extends Controller
 
         return response()->json($user, 200);
     }
+
+    public function users()
+    {
+        $users = User::paginate(10);
+
+        return response()->json($users);
+    }
 }
