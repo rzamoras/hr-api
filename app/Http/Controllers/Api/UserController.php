@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,35 +27,41 @@ class UserController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $user = new User();
-
         $request->validate([
-            'username' => 'required|unique:users,username',
+            'user_name' => 'required|unique:users,user_name',
             'first_name' => 'required',
+            'middle_name' => 'sometimes',
+            'last_name' => 'required',
+            'name_ext' => 'sometimes',
             'email' => 'sometimes|unique:users,email',
+            'office_id' => 'required',
             'password' => 'required|confirmed|min:6',
             'password_confirmation' => 'required',
         ],
             [
-                'password.confirmed' => 'Password Confirmation does not match'
+                'password.confirmed' => 'Password Confirmation does not match',
+                'office_id.required' => 'Department/ Office is required',
             ]);
 
-        $user->username = $request->input('username');
-        $user->first_name = $request->input('first_name');
-        $user->middle_name = $request->input('middle_name');
-        $user->last_name = $request->input('last_name');
-        $user->name_ext = $request->input('name_ext');
-        $user->password = Hash::make($request->input('password'));
-
+        $user = new User($request->all());
         $user->save();
 
-        return response()->json($user, 200);
+        $user->assignRole('USER');
+
+        return response()->json($user);
     }
 
     public function users()
     {
-        $users = User::paginate(10);
+        $users = User::latest()
+            ->with('office')
+            ->paginate(5);
 
         return response()->json($users);
+    }
+
+    public static function user() {
+        $user = Auth::user();
+        return response()->json($user);
     }
 }

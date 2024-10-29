@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -34,6 +36,7 @@ class User extends Authenticatable
         'middle_name',
         'name_ext',
         'email',
+        'office_id',
         'password',
     ];
 
@@ -60,14 +63,27 @@ class User extends Authenticatable
         ];
     }
 
+    public function office(): HasOne
+    {
+        return $this->hasOne(Office::class, 'id', 'office_id');
+    }
+
     protected $appends = [
-        'full_name'
+        'full_name',
+        'is_first_login'
     ];
 
     protected function fullName(): Attribute
     {
         return Attribute::make(
             get: fn() => $this->first_name . " " . $this->last_name,
+        );
+    }
+
+    protected function isFirstLogin(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Hash::check('password123', $this->password),
         );
     }
 }

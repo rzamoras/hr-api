@@ -44,13 +44,14 @@ return new class extends Migration {
             ['code' => '8992', 'department' => "CITY INVESTMENT AND TOURISM OFFICE", 'abbreviation' => 'CITO']
         ];
 
-
         foreach ($offices as $office) {
-            Office::insert([
+            $data = new Office([
                 'code' => $office['code'],
                 'department' => $office['department'],
                 'short_name' => $office['abbreviation'],
             ]);
+
+            $data->save();
         }
     }
 

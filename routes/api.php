@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CsmResponseController;
+use App\Http\Controllers\Api\OfficeController;
 use App\Http\Controllers\Api\PermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::put('/change-password', [AuthController::class, 'changePassword']);
 ROute::apiResources([
     '/csm-response' => CsmResponseController::class,
 ]);
@@ -14,10 +16,8 @@ ROute::apiResources([
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResources([
         '/role-permissions' => PermissionController::class,
-    ]);
-
-    Route::apiResources([
         '/user' => UserController::class,
+        '/offices' => OfficeController::class,
     ]);
 
     Route::controller(PermissionController::class)->group(function () {

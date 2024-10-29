@@ -27,8 +27,10 @@ class AuthController extends Controller
 
             $permissions = PermissionController::userPermissions();
             $roles = PermissionController::userRoles();
+            $auth = UserController::user();
 
             return response()->json([
+                "auth" => $auth->original,
                 "token" => $token->plainTextToken,
                 "permissions" => $permissions->original,
                 "roles" => $roles->original,
@@ -38,19 +40,10 @@ class AuthController extends Controller
         return response()->json(["message" => 'Username and Password not match'], 401);
     }
 
-    public function cookieLogin(Request $request): JsonResponse
+    public function changePassword(Request $request): JsonResponse
     {
-        $request->validate([
-            'user_name' => 'required',
-            'password' => 'required',
-        ]);
+        $request->validate([]);
 
-        if (Auth::attempt($request->only(['username', 'password']))) {
-            $request->session()->regenerate();
-
-            return response()->json(['message' => 'Login successful']);
-        }
-
-        return response()->json('Username and Password not match', 401);
+        return response()->json("Password Changed");
     }
 }
