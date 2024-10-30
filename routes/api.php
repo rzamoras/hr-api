@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::put('/change-password', [AuthController::class, 'changePassword']);
+Route::post('/change-default-password', [AuthController::class, 'changeDefaultPassword']);
 ROute::apiResources([
     '/csm-response' => CsmResponseController::class,
 ]);
@@ -30,5 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'users');
+        Route::post('/restore-user/{id}', 'restoreUser');
+    });
+
+    Route::controller(OfficeController::class)->group(function () {
+       Route::post('/import-offices', 'importOffices');
+       Route::get('/get-sections/{id}', 'sections');
     });
 });

@@ -19,10 +19,11 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('name_ext')->nullable()->default(null);
             $table->string('email')->unique()->nullable()->default(null);
-            $table->string('office_id')->nullable()->default(null);
-            $table->timestamp('email_verified_at')->nullable()->default(null);
+            $table->string('office_code')->nullable()->default(null)->index();
+            $table->string('section_code')->nullable()->default(null)->index();
             $table->string('password');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 

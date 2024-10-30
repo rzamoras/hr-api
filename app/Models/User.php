@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasRoles;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -36,7 +37,8 @@ class User extends Authenticatable
         'middle_name',
         'name_ext',
         'email',
-        'office_id',
+        'office_code',
+        'section_code',
         'password',
     ];
 
@@ -65,12 +67,13 @@ class User extends Authenticatable
 
     public function office(): HasOne
     {
-        return $this->hasOne(Office::class, 'id', 'office_id');
+        return $this->hasOne(Office::class, 'code', 'office_code');
     }
 
     protected $appends = [
         'full_name',
-        'is_first_login'
+        'is_first_login',
+        'is_deleted'
     ];
 
     protected function fullName(): Attribute
@@ -84,6 +87,13 @@ class User extends Authenticatable
     {
         return Attribute::make(
             get: fn() => Hash::check('password123', $this->password),
+        );
+    }
+
+    protected function isDeleted(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => (bool)$this->deleted_at,
         );
     }
 }

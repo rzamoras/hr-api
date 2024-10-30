@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -40,9 +42,16 @@ class AuthController extends Controller
         return response()->json(["message" => 'Username and Password not match'], 401);
     }
 
-    public function changePassword(Request $request): JsonResponse
+    public function changeDefaultPassword(Request $request): JsonResponse
     {
-        $request->validate([]);
+        $request->validate([
+            'password' => 'required|confirmed|min:6',
+            'password_confirmation' => 'required',
+        ]);
+
+        $user = User::where('user_name', $request->user_name)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
 
         return response()->json("Password Changed");
     }
