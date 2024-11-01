@@ -52,6 +52,12 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function show(User $user): JsonResponse
+    {
+        $user->getPermissionsViaRoles();
+        return response()->json($user);
+    }
+
     public function destroy($id)
     {
         $user = User::find($id);

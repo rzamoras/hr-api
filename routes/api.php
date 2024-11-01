@@ -22,10 +22,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(PermissionController::class)->group(function () {
         Route::get('/get-permissions', 'permissions');
+        Route::get('/get-roles', 'roles');
         Route::get('/user-roles', 'userRoles');
         Route::get('/user-permissions', 'userPermissions');
         Route::post('/revoke-role-permission', 'revokeRolePermission');
         Route::post('/assign-role-permission', 'assignRolePermission');
+        Route::get('/get-role-permissions/{id}', 'rolePermissions');
+        Route::post('/sync-user-roles', 'syncUserRoles');
     });
 
     Route::controller(UserController::class)->group(function () {

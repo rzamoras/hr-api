@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
@@ -32,6 +33,13 @@ class PermissionController extends Controller
         return response()->json($role);
     }
 
+    public function roles()
+    {
+        $roles = Role::get();
+
+        return response()->json($roles);
+    }
+
     public function permissions()
     {
         $permissions = Permission::get();
@@ -39,7 +47,8 @@ class PermissionController extends Controller
         return response()->json($permissions);
     }
 
-    public function revokeRolePermission(Request $request) {
+    public function revokeRolePermission(Request $request)
+    {
         $role = Role::where('id', $request->role_id)->with('permissions')->first();
         $permission = Permission::where('id', $request->permission_id)->first();
         $role->revokePermissionTo($permission);
@@ -47,7 +56,8 @@ class PermissionController extends Controller
         return response()->json('Permission revoked');
     }
 
-    public function assignRolePermission(Request $request) {
+    public function assignRolePermission(Request $request)
+    {
         $role = Role::where('id', $request->role_id)->with('permissions')->first();
         $permission = Permission::where('id', $request->permission_id)->first();
         $role->givePermissionTo($permission);
@@ -74,5 +84,22 @@ class PermissionController extends Controller
         }
 
         return response()->json($permissions);
+    }
+
+    public function rolePermissions($id)
+    {
+        $role = Role::where('id', $id)->with('permissions')->first();
+
+        return response()->json($role);
+    }
+
+    public function syncUserRoles(Request $request)
+    {
+        $role = Role::where('id', $request->role_id)->first();
+        $user = User::where('id', $request->user_id)->first();
+
+        $user->syncRoles($role);
+
+        return response()->json('Role synced');
     }
 }
