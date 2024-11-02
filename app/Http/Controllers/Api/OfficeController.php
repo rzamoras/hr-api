@@ -24,10 +24,16 @@ class OfficeController extends Controller
         return response()->json('success');
     }
 
-    public function sections($id)
+    public function section($id)
     {
         $sections = OfficeSection::where('office_id', $id)->get();
 
+        return response()->json($sections);
+    }
+
+    public function sections()
+    {
+        $sections = OfficeSection::all();
         return response()->json($sections);
     }
 }

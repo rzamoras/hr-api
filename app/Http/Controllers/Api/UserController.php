@@ -55,6 +55,7 @@ class UserController extends Controller
     public function show(User $user): JsonResponse
     {
         $user->getPermissionsViaRoles();
+        $user->load('section', 'office');
         return response()->json($user);
     }
 
@@ -66,7 +67,32 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function restoreUser($id)
+    public function modifyUser(Request $request, $id): JsonResponse
+    {
+        $request->validate([
+            'user_name' => 'required|unique:users,user_name,' . $id,
+            'first_name' => 'required',
+            'middle_name' => 'sometimes',
+            'last_name' => 'required',
+            'name_ext' => 'sometimes',
+            'email' => 'sometimes|unique:users,email,' . $id,
+            'office_code' => 'required',
+            'section_code' => 'sometimes',
+        ],
+            [
+                'office_code.required' => 'Department/ Office is required',
+            ]);
+
+        $user = User::find($id);
+        $user->update($request->all());
+        
+        $user->save();
+
+        return response()->json($user);
+    }
+
+    public
+    function restoreUser($id)
     {
         $user = User::withTrashed()->find($id);
         $user->restore();
@@ -74,7 +100,8 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function users()
+    public
+    function users()
     {
         $auth = Auth::user();
 
@@ -88,7 +115,8 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public static function user()
+    public
+    static function user()
     {
         $user = Auth::user();
         return response()->json($user);

@@ -34,10 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'users');
         Route::post('/restore-user/{id}', 'restoreUser');
+        Route::post('/modify-user/{id}', 'modifyUser');
     });
 
     Route::controller(OfficeController::class)->group(function () {
        Route::post('/import-offices', 'importOffices');
-       Route::get('/get-sections/{id}', 'sections');
+       Route::get('/get-section/{id}', 'section');
+       Route::get('/sections', 'sections');
     });
 });

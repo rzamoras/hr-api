@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -65,9 +66,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function office(): HasOne
+    public function office(): BelongsTo
     {
-        return $this->hasOne(Office::class, 'code', 'office_code');
+        return $this->belongsTo(Office::class, 'office_code', 'code');
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(OfficeSection::class, 'section_code', 'code');
     }
 
     protected $appends = [

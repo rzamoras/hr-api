@@ -19,7 +19,21 @@ class OfficeSection extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            set: fn($value) => Str::upper($value),
+            set: fn($value) => trim(Str::upper($value)),
+        );
+    }
+
+    protected function code(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => trim($value),
+        );
+    }
+
+    protected function officeCode(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => trim($value),
         );
     }
 }

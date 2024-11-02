@@ -22,4 +22,11 @@ class Office extends Model
             set: fn($value) => Str::upper($value),
         );
     }
+
+    protected function code(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => trim($value),
+        );
+    }
 }
