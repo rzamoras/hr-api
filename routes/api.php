@@ -42,4 +42,8 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::get('/get-section/{id}', 'section');
        Route::get('/sections', 'sections');
     });
+
+    Route::controller(CSmResponseController::class)->group(function () {
+        Route::get('/get-responses', 'responses');
+    });
 });
