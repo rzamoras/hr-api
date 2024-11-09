@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('sex')->nullable()->default(null);
             $table->string('age')->nullable()->default(null);
             $table->string('region')->nullable()->default(null);
-            $table->string('service_availed')->nullable()->default(null);
+            $table->unsignedBigInteger('service_id')->nullable()->default(null);
             $table->string('service_type')->nullable()->default(null);
             $table->string('cc1')->nullable()->default(null);
             $table->string('cc2')->nullable()->default(null);
